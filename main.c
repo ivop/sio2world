@@ -252,6 +252,13 @@ static void hw_usart_init(unsigned int ubrr) {
         UCSR0C |= _BV(USBS0);               // 8N2(!) for pokey div <= 3
 }
 
+/* Clarification: 8N2 is for an unmodified Atari with the SIO caps in place.
+ * I managed to reach Pokey divisor 0 with this, which wouldn't work with 8N1.
+ * Somehow, the longer stop bit helps Pokey keeping up.
+ * On a modified Atari, i.e. with its caps clipped, this is not needed.
+ * Plan was to make this configurable
+ */
+
 static void hw_usart_tx_byte(uint8_t byte) {
     while(!(UCSR0A & _BV(UDRE0))) ;         // wait for port ready to write
     UDR0 = byte;
